@@ -36,11 +36,20 @@ client = commands.Bot(command_prefix=".", intents=intents)
 load_dotenv()
 
 
+
+
+
 @client.event
 async def on_ready():
     await client.load_extension("QOTD-cog")
+    await client.load_extension("fun-commands")
     print(f"We have logged in as {client.user}")
     
+
+
+
+
+
 
 
 openai.api_key = os.environ.get("OPENAI_KEY")
@@ -49,22 +58,6 @@ PERSPECTIVE_API_KEY = os.environ.get("PERSPECTIVE_KEY")
 
 
 
-@client.command()
-async def hello(ctx):
-    print(f"hello command from @{ctx.message.author}")
-    await ctx.send(f"hello {ctx.author.mention}!")
-
-
-@client.command()
-async def ping(ctx):
-    print(f"ping command from @{ctx.message.author}")
-    await ctx.send(f"My ping is** {round(client.latency*1000)} Ms**")
-
-
-@client.command()
-async def leakechosipaddress(ctx):
-    print(f"carters command from @{ctx.message.author}")
-    await ctx.send("Echos IP address is 207.97.227.239")
 
 
 @client.command(description="Add questions to the bot")
@@ -540,42 +533,7 @@ async def weathercode(ctx):
     
     
     
-@client.command()
-async def lengthen(ctx, arg):
-    
-    words = arg.split()
-    
-    new_word = []
-    
-    for word in words:
-        
-        url = f"https://wordsapiv1.p.rapidapi.com/words/{word}/synonyms"
-        headers = {
-	    "X-RapidAPI-Key": os.environ.get("WORDSAPI_TOKEN"),
-	    "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-        }
-    
-        response = requests.request("GET", url, headers=headers)
-        
-        length = len(word)
-        temp_word = word
-        
-        try:
-            
-            for item in response.json()["synonyms"]:
-                if len(item) >= length:
-                    length = len(item)
-                    temp_word = item
-                
-            new_word.append(temp_word)
-        except:
-            new_word.append(temp_word)
-        
-    new_word_string = ""
-    for word in new_word:
-        new_word_string += f'{word} '
-        
-    await ctx.send(ctx.author.mention + f' {new_word_string}')
+
     
     
             
