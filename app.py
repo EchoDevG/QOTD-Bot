@@ -28,14 +28,18 @@ intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 
+
+
+
 chat_logs = {}
 client = commands.Bot(command_prefix=".", intents=intents)
 load_dotenv()
 
+
 @client.event
 async def on_ready():
+    await client.load_extension("QOTD-cog")
     print(f"We have logged in as {client.user}")
-    await client.loop.create_task(background_task())
     
 
 
