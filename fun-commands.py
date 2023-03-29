@@ -7,14 +7,13 @@ import os
 
 class fun_commands(commands.Cog):
     
-    
     def __init__(self, client):
         self.client = client
         
         
         
-    @client.command()
-    async def lengthen(ctx, arg):
+    @commands.command()
+    async def lengthen(self, ctx, arg):
     
         words = arg.split()
     
@@ -54,22 +53,41 @@ class fun_commands(commands.Cog):
     
     
     
-    @client.command()
-    async def hello(ctx):
+    @commands.command()
+    async def hello(self, ctx):
         print(f"hello command from @{ctx.message.author}")
         await ctx.send(f"hello {ctx.author.mention}!")
 
 
-    @client.command()
-    async def ping(ctx):
+    @commands.command()
+    async def ping(self, ctx):
         print(f"ping command from @{ctx.message.author}")
-        await ctx.send(f"My ping is** {round(client.latency*1000)} Ms**")
+        await ctx.send(f"My ping is** {round(self.client.latency*1000)} Ms**")
 
 
-    @client.command()
-    async def leakechosipaddress(ctx):
+    @commands.command()
+    async def leakechosipaddress(self, ctx):
         print(f"carters command from @{ctx.message.author}")
         await ctx.send("Echos IP address is 207.97.227.239")
+        
+        
+    @commands.command()
+    async def joke(self, ctx):
+
+        location = "/home/container/badJokes.txt"
+        with open(location) as f:
+            lineCount = sum(1 for _ in f)
+
+        lineNum = random.randint(0, lineCount)
+
+        with open(location) as fp:
+            for i, line in enumerate(fp):
+                if i == lineNum:
+                    outputMessage = line
+                elif i > lineCount:
+                    break
+
+        await ctx.send(ctx.author.mention + " " + outputMessage)
   
     
     

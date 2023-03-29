@@ -118,52 +118,7 @@ async def on_raw_reaction_add(payload):
             await send_channel.send(embed=embedToSend)
 
 
-@client.command()
-async def joke(ctx):
 
-    location = "/home/container/badJokes.txt"
-    with open(location) as f:
-        lineCount = sum(1 for _ in f)
-
-    lineNum = random.randint(0, lineCount)
-
-    with open(location) as fp:
-        for i, line in enumerate(fp):
-            if i == lineNum:
-                outputMessage = line
-            elif i > lineCount:
-                break
-
-    await ctx.send(ctx.author.mention + " " + outputMessage)
-
-
-@client.command()
-async def force(ctx):
-    print("forcing QOTD")
-    if ctx.author.id == 715621217754808340:
-
-        location = "/home/container/questions.txt"
-
-        with open(location) as f:
-            lineCount = sum(1 for _ in f)
-            lineNum = random.randint(0, lineCount)
-
-        with open(location) as fp:
-            for i, line in enumerate(fp):
-                if i == lineNum:
-                    outputMessage = line
-                elif i > lineCount:
-                    break
-        lineNum = str(lineNum)
-        print(outputMessage)
-
-        embedToSend = discord.Embed(title=outputMessage, color=0xFF5733)
-        embedToSend.set_author(name="Question Of The Day")
-        embedToSend.set_footer(text=("This was question number " + lineNum))
-        await ctx.send(embed=embedToSend)
-    else:
-        print(f"{ctx.author} tried to force QOTD")
-        await ctx.send("you do not have access to that command")
 
 
 # music bot, courtesy of ChatGPT (shhhh)
