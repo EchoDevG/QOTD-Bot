@@ -1,0 +1,7 @@
+discord.py[voice]
+ffmpeg
+pytube
+requests
+openai
+google-api-python-client
+dotenv
