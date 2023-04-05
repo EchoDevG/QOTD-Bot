@@ -19,6 +19,7 @@ from googleapiclient import discovery
 from discord.ext.commands import cooldown, BucketType
 from dotenv import load_dotenv
 from os.path import join, dirname
+from cogs.QOTD_cog import QOTD
 
 
 
@@ -41,7 +42,7 @@ load_dotenv()
 
 @client.event
 async def on_ready():
-    await client.load_extension("cogs.QOTD-cog")
+    await client.load_extension("cogs.QOTD_cog")
     print("QOTD cog loaded")
     await client.load_extension("cogs.fun-commands")
     print("Fun commands cog loaded")
@@ -52,7 +53,7 @@ async def on_ready():
     await client.load_extension("cogs.weather-cog")
     print("Weather cog loaded")
     print(f"We have logged in as {client.user}")
-    await QOTD(client).setup(client)
+    QOTD(client).setup(client)
     
 
 
@@ -67,19 +68,6 @@ PERSPECTIVE_API_KEY = os.environ.get("PERSPECTIVE_KEY")
 
 
 
-
-
-@client.command(description="Add questions to the bot")
-async def add(ctx, arg):
-    print(f"question added: {arg}")
-    f = open("/home/container/text/potentialQuestions.txt", "a")
-
-    saveMessage = str(ctx.message.author) + "#" + arg
-    print("question saved to potentialQuestions.txt: " + saveMessage)
-
-    f.write(f"{saveMessage}\n")
-    f.close()
-    await ctx.send(f"Question added: {arg}")
 
 
 # if a message is reacted to a bunch, add it to a quotes
@@ -129,86 +117,6 @@ async def on_raw_reaction_add(payload):
 
 
 
-
-# music bot, courtesy of ChatGPT (shhhh)
-
-voice = None
-song_queue = []
-
-
-async def play_music(ctx):
-    if not song_queue:
-        global voice
-        await voice.disconnect()
-        voice = None
-        return
-
-    video_url = song_queue[0]
-    video = pytube.YouTube(video_url)
-    audio_stream = video.streams.filter(only_audio=True).first()
-    source = await discord.FFmpegOpusAudio.from_probe(
-        audio_stream.url,
-        **{
-            "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
-        },
-    )
-    song_queue.pop(0)
-    voice.play(source, after=lambda e: client.loop.create_task(play_music(ctx)))
-
-
-@client.command()
-async def join(ctx):
-    if ctx.author.voice is None:
-        await ctx.send("You're not connected to a voice channel")
-        return
-
-    global voice
-    if voice is not None:
-        await voice.move_to(ctx.author.voice.channel)
-        return
-
-    voice = await ctx.author.voice.channel.connect()
-
-
-@client.command()
-async def leave(ctx):
-    global voice
-    await ctx.voice_client.disconnect()
-    voice = None
-
-
-@client.command()
-async def play(ctx, *, url):
-    global voice
-    global song_queue
-    song_queue.append(url)
-
-    if voice is None:
-        await ctx.invoke(join)
-
-    if not voice.is_playing():
-        await play_music(ctx)
-
-
-@client.command()
-async def skip(ctx):
-    global voice
-    if voice.is_playing():
-        voice.stop()
-
-
-@client.command()
-async def queue(ctx):
-    global song_queue
-    if not song_queue:
-        await ctx.send("There are no songs in the queue.")
-        return
-
-    queue = ""
-    for i, song in enumerate(song_queue):
-        queue += f"{i+1}. {song}\n"
-
-    await ctx.send(f"```Queue:\n{queue}```")
 
 
 # chatbot
