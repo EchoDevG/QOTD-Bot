@@ -41,9 +41,18 @@ load_dotenv()
 
 @client.event
 async def on_ready():
-    await client.load_extension("QOTD-cog")
-    await client.load_extension("fun-commands")
+    await client.load_extension("cogs.QOTD-cog")
+    print("QOTD cog loaded")
+    await client.load_extension("cogs.fun-commands")
+    print("Fun commands cog loaded")
+    await client.load_extension("cogs.chat-cog")
+    print("Chat cog loaded")
+    await client.load_extension("cogs.music-cog")
+    print("Music cog loaded")
+    await client.load_extension("cogs.weather-cog")
+    print("Weather cog loaded")
     print(f"We have logged in as {client.user}")
+    await QOTD(client).setup(client)
     
 
 
@@ -63,7 +72,7 @@ PERSPECTIVE_API_KEY = os.environ.get("PERSPECTIVE_KEY")
 @client.command(description="Add questions to the bot")
 async def add(ctx, arg):
     print(f"question added: {arg}")
-    f = open("/home/container/potentialQuestions.txt", "a")
+    f = open("/home/container/text/potentialQuestions.txt", "a")
 
     saveMessage = str(ctx.message.author) + "#" + arg
     print("question saved to potentialQuestions.txt: " + saveMessage)
@@ -81,7 +90,7 @@ async def on_raw_reaction_add(payload):
         message = await channel.fetch_message(payload.message_id)
         reaction = get(message.reactions, emoji=payload.emoji.name)
 
-        logfile = open("/home/container/quotesMessages.txt", "r")
+        logfile = open("/home/container/text/quotesMessages.txt", "r")
         loglist = logfile.readlines()
         logfile.close()
         found = False
@@ -97,7 +106,7 @@ async def on_raw_reaction_add(payload):
             )
             author = msg.author
 
-            logfile = open("/home/container/quotesMessages.txt", "a")
+            logfile = open("/home/container/text/quotesMessages.txt", "a")
             logfile.write(str(payload.message_id) + "\n")
 
             if len(msg.content)<1024:
@@ -258,7 +267,7 @@ async def groupchat(ctx, arg):
     else:
         toxic = False
         
-    f = open("/home/container/chat_logs.txt", "a")
+    f = open("/home/container/logs/chat_logs.txt", "a")
 
     saveMessage = str(ctx.message.author) + " --- " + arg + " --- " + output
     print("message saved to chat_logs.txt")
@@ -330,7 +339,7 @@ async def chat(ctx, arg):
     else:
         toxic = False
         
-    f = open("/home/container/chat_logs.txt", "a")
+    f = open("/home/container/logs/chat_logs.txt", "a")
 
     saveMessage = str(ctx.message.author) + " --- " + arg + " --- " + output
     print("message saved to chat_logs.txt")
@@ -473,7 +482,7 @@ async def weather(ctx, arg=352792):
 @client.command()
 async def weathercode(ctx):
 
-    with open("/home/container/locations.txt", "r") as fr:
+    with open("/home/container/text/locations.txt", "r") as fr:
             # reading line by line
             lines = fr.readlines()
     
