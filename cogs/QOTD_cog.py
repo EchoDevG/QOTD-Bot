@@ -31,9 +31,7 @@ class QOTD(commands.Cog):
         channels.append(1079795482580230225)  # echos testing server
         channels.append(1080189433686536272)  # no bitches?
         
-        chat_logs={}
-        group_chat_logs={}
-    
+        
         lookfor = "questions.txt"
 
         for root, dirs, files in os.walk("/"):
